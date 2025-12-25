@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/registerUser.dto';
 import { AuthGuard } from './auth.guard';
 import { UserService } from 'src/user/user.service';
+import { LoginDto } from './dto/loginUser.dto';
 
 @Controller('auth') // /auth/register
 export class AuthController {
@@ -25,19 +26,15 @@ export class AuthController {
   }
 
   @Post('login')
-  async login() {
-    // todo: implement this
-    /**
-     * 1. Receive email and password
-     * 2. Match the email and password
-     * 3. Generate JWT token
-     */
+  async login(@Body() loginUserDto: LoginDto) {
+    const token = await this.authService.loginUser(loginUserDto);
+    return token;
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
   async getProfile(@Request() req) {
-    const userId = req.user.sub;
+    const userId = req.user.sub as string;
 
     const user = await this.userService.getUserById(userId);
 
